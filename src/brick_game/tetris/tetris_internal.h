@@ -11,6 +11,7 @@
 #define TETRIS_PREVIEW_SIZE 4
 #define TETROMINO_SIZE 4
 #define TETROMINO_COUNT 7
+#define ROTATION_STATES 4
 
 typedef enum {
   kStateStart = 0,
