@@ -2,6 +2,8 @@
 
 Tetris implementation in C11 with a terminal interface based on `ncurses`.
 
+![start_game](docs/images/start_game.png) ![game_process](docs/images/game_process.png) ![game_over](docs/images/game_over.png)
+
 This repository currently covers the following:
 
 - Tetris game logic as a separate library
