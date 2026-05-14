@@ -2,6 +2,36 @@
 
 #include "tetris_board.h"
 #include "tetris_random.h"
+#include "tetris_storage.h"
+
+static int tetrisScoreForLines(const int cleared_lines) {
+  int score = 0;
+  switch (cleared_lines) {
+    case 1:
+      score = 100;
+      break;
+    case 2:
+      score = 300;
+      break;
+    case 3:
+      score = 700;
+      break;
+    case 4:
+      score = 1500;
+      break;
+    default:
+      break;
+  }
+  return score;
+}
+
+static void tetrisApplyScore(TetrisGame_t *game, const int cleared_lines) {
+  game->score += tetrisScoreForLines(cleared_lines);
+  if (game->score > game->high_score) {
+    game->high_score = game->score;
+    tetrisSaveHighScore(game->high_score);
+  }
+}
 
 void tetrisSpawnNextPiece(TetrisGame_t *game) {
   game->current = game->next_piece;
@@ -53,5 +83,5 @@ void tetrisLockCurrent(TetrisGame_t *game) {
   }
   tetrisMergeCurrent(game);
   game->has_current = false;
-  tetrisClearLines(game);
+  tetrisApplyScore(game, tetrisClearLines(game));
 }

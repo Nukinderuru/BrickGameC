@@ -53,6 +53,9 @@ typedef struct {
   uint64_t base_fall_delay_ms;
   uint64_t soft_drop_delay_ms;
 
+  int score;
+  int high_score;
+
   GameInfo_t info;
 } TetrisGame_t;
 
@@ -61,5 +64,6 @@ void tetrisEnsureInitialized(void);
 void tetrisReset(TetrisGame_t *game);
 void tetrisSyncInfo(TetrisGame_t *game);
 uint64_t tetrisNowMs(void);
+void tetrisResetSingletonForTests(void);
 
 #endif  // SRC_BRICK_GAME_TETRIS_TETRIS_INTERNAL_H_
