@@ -4,11 +4,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <sys/types.h>
 #include <unistd.h>
 
 #include "../src/brick_game/tetris/tetris_internal.h"
 #include "../src/brick_game/tetris/tetris_logic.h"
+#include "../src/brick_game/tetris/tetris_storage.h"
 
 #define TEST_PATH_SIZE 4096
 
@@ -205,6 +205,48 @@ START_TEST(malformed_high_score_file_falls_back_to_zero) {
 }
 END_TEST
 
+START_TEST(negative_high_score_file_falls_back_to_zero) {
+  char temp_home[TEST_PATH_SIZE] = {0};
+  char path[TEST_PATH_SIZE] = {0};
+  setup_temp_home(temp_home, sizeof(temp_home));
+  build_path(path, sizeof(path), temp_home, "/.local");
+  mkdir(path, 0700);
+  build_path(path, sizeof(path), temp_home, "/.local/share");
+  mkdir(path, 0700);
+  build_path(path, sizeof(path), temp_home, "/.local/share/brick_game_cli");
+  mkdir(path, 0700);
+  build_score_file_path(path, sizeof(path), temp_home);
+  FILE *file = fopen(path, "w");
+  ck_assert_ptr_nonnull(file);
+  fprintf(file, "-42\n");
+  fclose(file);
+
+  tetrisResetSingletonForTests();
+  tetrisEnsureInitialized();
+  ck_assert_int_eq(tetrisGetGame()->high_score, 0);
+  cleanup_temp_home(temp_home);
+}
+END_TEST
+
+START_TEST(load_high_score_without_home_returns_zero) {
+  ck_assert_int_eq(unsetenv("HOME"), 0);
+  ck_assert_int_eq(tetrisLoadHighScore(), 0);
+}
+END_TEST
+
+START_TEST(load_high_score_with_empty_home_returns_zero) {
+  ck_assert_int_eq(setenv("HOME", "", 1), 0);
+  ck_assert_int_eq(tetrisLoadHighScore(), 0);
+}
+END_TEST
+
+START_TEST(save_high_score_without_home_does_not_fail) {
+  ck_assert_int_eq(unsetenv("HOME"), 0);
+  tetrisSaveHighScore(1234);
+  ck_assert_int_eq(tetrisLoadHighScore(), 0);
+}
+END_TEST
+
 START_TEST(sync_info_exposes_score_and_high_score) {
   tetrisResetSingletonForTests();
   tetrisEnsureInitialized();
@@ -228,6 +270,10 @@ Suite *tetris_score_suite(void) {
   tcase_add_test(tcase, high_score_loads_as_zero_when_file_missing);
   tcase_add_test(tcase, high_score_persists_when_updated);
   tcase_add_test(tcase, malformed_high_score_file_falls_back_to_zero);
+  tcase_add_test(tcase, negative_high_score_file_falls_back_to_zero);
+  tcase_add_test(tcase, load_high_score_without_home_returns_zero);
+  tcase_add_test(tcase, load_high_score_with_empty_home_returns_zero);
+  tcase_add_test(tcase, save_high_score_without_home_does_not_fail);
   tcase_add_test(tcase, sync_info_exposes_score_and_high_score);
   suite_add_tcase(suite, tcase);
   return suite;

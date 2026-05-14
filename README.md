@@ -11,6 +11,7 @@ This repository currently covers the following:
 - finite-state machine based game flow
 - movement, rotation, row clearing, next-piece preview, pause, and game over
 - scoring and persistent high score
+- level progression and speed scaling
 - unit tests with `check`
 
 ## Project Structure
@@ -77,6 +78,8 @@ brick_game_cli
 - line clearing
 - score awards for clearing 1, 2, 3, or 4 lines
 - persistent high score stored between runs
+- level increases every 600 points up to 10
+- falling speed increases with level
 - game over when the top is reached
 - start, pause, and game over overlays
 - colored tetromino rendering in supported terminals
@@ -98,6 +101,7 @@ Current tests cover the library logic, including:
 - attach and line clear behavior
 - board helper logic
 - scoring and high-score persistence
+- level progression and gravity scaling
 
 ## Coverage
 
@@ -134,4 +138,3 @@ make install PREFIX=/usr/local
 - The public library API follows the provided assignment specification:
   - `void userInput(UserAction_t action, bool hold);`
   - `GameInfo_t updateCurrentState(void);`
-- Level progression is not implemented yet, but will be soon.
