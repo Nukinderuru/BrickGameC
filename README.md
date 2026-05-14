@@ -10,6 +10,7 @@ This repository currently covers the following:
 - terminal UI in `ncurses`
 - finite-state machine based game flow
 - movement, rotation, row clearing, next-piece preview, pause, and game over
+- scoring and persistent high score
 - unit tests with `check`
 
 ## Project Structure
@@ -74,6 +75,8 @@ brick_game_cli
 - piece rotation and horizontal movement
 - manual faster downward movement with `Down`
 - line clearing
+- score awards for clearing 1, 2, 3, or 4 lines
+- persistent high score stored between runs
 - game over when the top is reached
 - start, pause, and game over overlays
 - colored tetromino rendering in supported terminals
@@ -94,6 +97,7 @@ Current tests cover the library logic, including:
 - pause behavior
 - attach and line clear behavior
 - board helper logic
+- scoring and high-score persistence
 
 ## Coverage
 
@@ -126,7 +130,8 @@ make install PREFIX=/usr/local
 ## Notes
 
 - Run the game in a normal terminal window. Some IDE-integrated terminals can render `ncurses` output incorrectly.
+- High score is stored at `~/.local/share/brick_game_cli/high_score`.
 - The public library API follows the provided assignment specification:
   - `void userInput(UserAction_t action, bool hold);`
   - `GameInfo_t updateCurrentState(void);`
-- Score, persistent high score, and level progression are not implemented yet, but will be soon.
+- Level progression is not implemented yet, but will be soon.

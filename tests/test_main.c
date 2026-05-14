@@ -5,6 +5,7 @@ Suite *tetris_move_suite(void);
 Suite *tetris_rotation_suite(void);
 Suite *tetris_attach_suite(void);
 Suite *tetris_board_suite(void);
+Suite *tetris_score_suite(void);
 
 int main(void) {
   int failed = 0;
@@ -13,6 +14,7 @@ int main(void) {
   srunner_add_suite(runner, tetris_rotation_suite());
   srunner_add_suite(runner, tetris_attach_suite());
   srunner_add_suite(runner, tetris_board_suite());
+  srunner_add_suite(runner, tetris_score_suite());
   srunner_run_all(runner, CK_NORMAL);
   failed = srunner_ntests_failed(runner);
   srunner_free(runner);

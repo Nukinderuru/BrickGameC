@@ -1,11 +1,13 @@
 #include "tetris_fsm.h"
 
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #include "tetris_board.h"
 #include "tetris_logic.h"
 #include "tetris_random.h"
+#include "tetris_storage.h"
 
 static void tetrisStartGame(TetrisGame_t *game) {
   tetrisReset(game);
@@ -170,8 +172,7 @@ void tetrisReset(TetrisGame_t *game) {
   game->next_piece = tetrisRandomPiece();
   game->has_current = false;
   game->soft_drop = false;
-  game->info.score = 0;
-  game->info.high_score = 0;
+  game->score = 0;
   game->info.level = 1;
   game->info.speed = 1;
   game->info.pause = 0;
@@ -195,6 +196,7 @@ void tetrisEnsureInitialized(void) {
   game->base_fall_delay_ms = 600;
   game->soft_drop_delay_ms = 75;
   game->state = kStateStart;
+  game->high_score = tetrisLoadHighScore();
   tetrisReset(game);
   game->initialized = true;
   tetrisSyncInfo(game);
@@ -227,9 +229,14 @@ void tetrisSyncInfo(TetrisGame_t *game) {
       }
     }
   }
-  game->info.score = 0;
-  game->info.high_score = 0;
+  game->info.score = game->score;
+  game->info.high_score = game->high_score;
   game->info.level = 1;
   game->info.speed = game->soft_drop ? 2 : 1;
   game->info.pause = game->paused ? 1 : 0;
+}
+
+void tetrisResetSingletonForTests(void) {
+  TetrisGame_t *game = tetrisGetGame();
+  memset(game, 0, sizeof(*game));
 }
