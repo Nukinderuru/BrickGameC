@@ -4,6 +4,27 @@
 #include "tetris_random.h"
 #include "tetris_storage.h"
 
+static uint64_t tetrisDelayForLevel(const int level) {
+  uint64_t delay = 650ULL;
+  if (level > 1) {
+    delay -= (uint64_t)(level - 1) * 55ULL;
+  }
+  if (delay < 155ULL) {
+    delay = 155ULL;
+  }
+  return delay;
+}
+
+static void tetrisUpdateProgression(TetrisGame_t *game) {
+  int level = game->score / 600 + 1;
+  if (level > TETRIS_MAX_LEVEL) {
+    level = TETRIS_MAX_LEVEL;
+  }
+  game->level = level;
+  game->speed = level;
+  game->base_fall_delay_ms = tetrisDelayForLevel(level);
+}
+
 static int tetrisScoreForLines(const int cleared_lines) {
   int score = 0;
   switch (cleared_lines) {
@@ -27,6 +48,7 @@ static int tetrisScoreForLines(const int cleared_lines) {
 
 static void tetrisApplyScore(TetrisGame_t *game, const int cleared_lines) {
   game->score += tetrisScoreForLines(cleared_lines);
+  tetrisUpdateProgression(game);
   if (game->score > game->high_score) {
     game->high_score = game->score;
     tetrisSaveHighScore(game->high_score);

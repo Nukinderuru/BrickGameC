@@ -12,6 +12,7 @@
 #define TETROMINO_SIZE 4
 #define TETROMINO_COUNT 7
 #define ROTATION_STATES 4
+#define TETRIS_MAX_LEVEL 10
 
 typedef enum {
   kStateStart = 0,
@@ -55,6 +56,8 @@ typedef struct {
 
   int score;
   int high_score;
+  int level;
+  int speed;
 
   GameInfo_t info;
 } TetrisGame_t;

@@ -173,8 +173,9 @@ void tetrisReset(TetrisGame_t *game) {
   game->has_current = false;
   game->soft_drop = false;
   game->score = 0;
-  game->info.level = 1;
-  game->info.speed = 1;
+  game->level = 1;
+  game->speed = 1;
+  game->base_fall_delay_ms = 650ULL;
   game->info.pause = 0;
   tetrisRebuildPreview(game);
 }
@@ -193,7 +194,7 @@ void tetrisEnsureInitialized(void) {
   }
   game->info.field = game->field_rows;
   game->info.next = game->next_rows;
-  game->base_fall_delay_ms = 600;
+  game->base_fall_delay_ms = 650ULL;
   game->soft_drop_delay_ms = 75;
   game->state = kStateStart;
   game->high_score = tetrisLoadHighScore();
@@ -231,8 +232,8 @@ void tetrisSyncInfo(TetrisGame_t *game) {
   }
   game->info.score = game->score;
   game->info.high_score = game->high_score;
-  game->info.level = 1;
-  game->info.speed = game->soft_drop ? 2 : 1;
+  game->info.level = game->level;
+  game->info.speed = game->speed;
   game->info.pause = game->paused ? 1 : 0;
 }
 

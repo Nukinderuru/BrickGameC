@@ -73,12 +73,12 @@ START_TEST(paused_game_blocks_gravity_tick) {
 }
 END_TEST
 
-START_TEST(soft_drop_sets_faster_speed_in_snapshot) {
+START_TEST(soft_drop_sets_flag_without_changing_level_speed) {
   setup_game();
   userInput(Down, true);
   const GameInfo_t info = updateCurrentState();
   ck_assert_int_eq(tetrisGetGame()->soft_drop, true);
-  ck_assert_int_eq(info.speed, 2);
+  ck_assert_int_eq(info.speed, 1);
 }
 END_TEST
 
@@ -94,12 +94,12 @@ START_TEST(soft_drop_timer_moves_piece_down) {
 }
 END_TEST
 
-START_TEST(soft_drop_release_restores_normal_speed) {
+START_TEST(soft_drop_release_restores_normal_level_speed) {
   setup_game();
   userInput(Down, true);
   updateCurrentState();
   GameInfo_t info = updateCurrentState();
-  ck_assert_int_eq(info.speed, 2);
+  ck_assert_int_eq(info.speed, 1);
   userInput(Down, false);
   info = updateCurrentState();
   ck_assert_int_eq(tetrisGetGame()->soft_drop, false);
@@ -129,9 +129,9 @@ Suite *tetris_move_suite(void) {
   tcase_add_test(tcase, down_tap_moves_piece_one_row);
   tcase_add_test(tcase, paused_game_blocks_horizontal_input);
   tcase_add_test(tcase, paused_game_blocks_gravity_tick);
-  tcase_add_test(tcase, soft_drop_sets_faster_speed_in_snapshot);
+  tcase_add_test(tcase, soft_drop_sets_flag_without_changing_level_speed);
   tcase_add_test(tcase, soft_drop_timer_moves_piece_down);
-  tcase_add_test(tcase, soft_drop_release_restores_normal_speed);
+  tcase_add_test(tcase, soft_drop_release_restores_normal_level_speed);
   tcase_add_test(tcase, soft_drop_release_does_not_add_extra_step);
   suite_add_tcase(suite, tcase);
   return suite;
